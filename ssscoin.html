@@ -1,0 +1,703 @@
+<html>
+<head>
+<title>Customer Details</title>
+</head>
+    <body>
+	
+	<script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script>	
+	
+	var account;
+	window.addEventListener('load', async () => {
+
+	
+		if (typeof window.ethereum !== 'undefined') { 
+			console.log("MetaMask is Available :) !"); 
+			}
+			
+		// Modern DApp browsers
+		if (window.ethereum) {
+			window.web3 = new Web3(ethereum);
+			
+			// To prevent the page reloading when the MetaMask network changes
+			ethereum.autoRefreshOnNetworkChange = false;
+			
+			// To Capture the account details from MetaMask
+			const accounts = await ethereum.enable();
+			account = accounts[0];
+				
+			}
+		// Legacy DApp browsers
+		else if (window.web3) {
+			//window.web3 = new Web3(web3.currentProvider);
+			window.web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/cbd9dc11b30147e9a2cc974be655ef7c")); 
+			}
+		// Non-DApp browsers
+		else {
+			console.log('Non-Ethereum browser detected. Please install MetaMask');
+			}
+			
+			});
+			
+			var abi = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "approved",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"name": "ApprovalForAll",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "burnMyToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "mintMyToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "safeTransferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "_data",
+				"type": "bytes"
+			}
+		],
+		"name": "safeTransferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"name": "setApprovalForAll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "transferMyToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "baseURI",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getApproved",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "isApprovedForAll",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "nameOfCoin",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerOf",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerOfCoin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes4",
+				"name": "interfaceId",
+				"type": "bytes4"
+			}
+		],
+		"name": "supportsInterface",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbolOfCoin",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenByIndex",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenOfOwnerByIndex",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenURI",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalNoOfCoins",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+	var contractAddress = '0x3Ade937eD2A4915c4dF5012464c473EbCf528727'
+	
+	function mint_token(){
+		var myContract = new web3.eth.Contract(abi,contractAddress, {from: account, gasPrice: '5000000', gas: '500000'});
+		
+		var id1 = document.getElementById("token1").value;
+		
+		var result = myContract.methods.mintMyToken(id1).send(function (err, result) {
+	   
+		if (err) { console.log(err); }
+		if (result) { document.getElementById("result1").innerHTML = result; }
+	   
+		});
+	}
+	function burn_token(){
+		var myContract = new web3.eth.Contract(abi,contractAddress, {from: account, gasPrice: '5000000', gas: '500000'});
+		
+		var id2 = document.getElementById("token2").value;
+		
+		var result = myContract.methods.burnMyToken(id2).send(function (err, result) {
+	   
+		if (err) { console.log(err); }
+		if (result) { document.getElementById("result2").innerHTML = result; }
+	   
+		});
+	}
+	
+	function transfer_token(){
+		var myContract = new web3.eth.Contract(abi,contractAddress, {from: account, gasPrice: '5000000', gas: '500000'});
+		
+		var id3 = document.getElementById("token3").value;
+		var id4 = document.getElementById("sender1").value;
+		var id5 = document.getElementById("receiver1").value;
+		
+		var result = myContract.methods.transferMyToken(id4,id5,id3).send(function (err, result) {
+	   
+		if (err) { console.log(err); }
+		if (result) { document.getElementById("result3").innerHTML = result; }
+	   
+		});
+	}
+		
+	function get_details(){
+		var myContract = new web3.eth.Contract(abi,contractAddress, {from: account, gasPrice: '5000000', gas: '500000'});
+				
+		var result = myContract.methods.nameOfCoin().call(function (err, result) {
+	     
+		if (err) { console.log(err); }
+		if (result) { 
+			document.getElementById("get_name").innerHTML = result;
+		}
+	   
+		});
+		var result = myContract.methods.symbolOfCoin().call(function (err, result) {
+	     
+		if (err) { console.log(err); }
+		if (result) { 
+			document.getElementById("get_symbol").innerHTML = result;
+		}
+	   
+		});
+		var result = myContract.methods.totalNoOfCoins().call(function (err, result) {
+	     
+		if (err) { console.log(err); }
+		if (result) { 
+			document.getElementById("get_balance").innerHTML = result;
+		}
+	   
+		});
+                   
+	
+	
+	}
+
+	</script>			
+
+	
+        <h1>SSS Coin</h1>
+		<br>
+    <form>
+        <h3>Show Details:</h3>
+        <form>
+		<table style="width:25%">
+		<tr><td><input type="button" onclick="get_details()" value="Get Details"></td></tr>
+		<tr>
+			<td>Token Name:</td>
+			<td><b><div id="get_name"></div></b></td>
+		  </tr>
+		  
+		  <tr>
+			<td>Token Symbol:</td>
+			<td><b><div id="get_symbol"></div></b></td>
+		  </tr>
+		  <tr>
+			<td>Balance Token:</td>
+			<td><b><div id="get_balance"></div></b></td>
+		  </tr>
+		  </table>
+		 <h4> Transaction Id: <a href=""><div id="result"></div></a></h4> 
+	</form>
+	<h3>Mint New Token:</h3>
+	<form>
+		<table style="width:25%">
+		  <tr>
+			<td>Token Id:</td>
+			<td><input type="text" id="token1" name="token1"></td>
+		  </tr>
+		  <tr>
+		    <td><input type="button" onclick="mint_token()" value="Mint My Token"></td>
+		  </tr>
+		  <h4> Transaction Id: <a href=""><div id="result1"></div></a></h4> 
+		</table>
+		<h3>Burn a Token:</h3>
+		<form>
+		<table style="width:25%">
+		  <tr>
+			<td>Token Id:</td>
+			<td><input type="text" id="token2" name="token2"></td>
+		  </tr>
+		  <tr>
+		  <td><input type="button" onclick="burn_token()" value="Burn My Token"></td>
+		  </tr>
+		</table>
+		<h4> Transaction Id: <a href=""><div id="result2"></div></a></h4>
+        </form> 
+		<h3>Transfer Token:</h3>
+		<form>
+		<table style="width:25%">
+		  <tr>
+			<td>Token Id:</td>
+			<td><input type="text" id="token3" name="token3"></td>
+		  </tr>
+		  <tr>
+			<td>Sender Address:</td>
+			<td><input type="text" id="sender1" name="sender1"></td>
+		  </tr>
+		  <tr>
+			<td>Receiver Address:</td>
+			<td><input type="text" id="receiver1" name="receiver1"></td>
+		  </tr>
+		  <tr>
+		  <td><input type="button" onclick="transfer_token()" value="Transfer Token"></td>
+		  </tr>
+		  <h4> Transaction Id: <a href=""><div id="result3"></div></a></h4>
+		</table>
+        </form> 
+    </body>
+</html>
+
