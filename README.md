@@ -1,4 +1,5 @@
 # BlockChain
 
 [click here](solidity_ui.html)
-[click here](bank.html)
+[Bank](bank.html)
+[sssCoin] (ssscoin.html)
