@@ -1,5 +1,5 @@
 # BlockChain
 
-[TaxCalculator](solidity_ui.html)
-[Bank](bank.html)
-[sssCoin](ssscoin.html)
+[TaxCalculator](solidity_ui.html) <br/>
+[Bank](bank.html) <br/>
+[sssCoin](ssscoin.html) <br/>
